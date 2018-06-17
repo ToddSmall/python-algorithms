@@ -11,6 +11,7 @@ vega-datasets = "*"
 pytest = "*"
 mypy = "*"
 pylint = "*"
+typing-extensions = "*"
 
 [dev-packages]
 
