@@ -53,6 +53,6 @@ def max_heapify(A: MutableSequence[CT], i: int) -> None:
     if right < len(A) and A[right] > A[largest]:
         largest = right
     if largest == i:
-        return
+        return None
     A[i], A[largest] = A[largest], A[i]
     return max_heapify(A, largest)

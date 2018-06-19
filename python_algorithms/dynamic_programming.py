@@ -1,25 +1,12 @@
 """Solving a few dynamic programming problems"""
 
-from functools import wraps
+from functools import lru_cache
 import sys
-from typing import Callable, List, Tuple
-
-
-def memoized(f: Callable) -> Callable:
-    """Decorator that memoizes the wrapped function."""
-    cache = {}
-    @wraps(f)
-    def wrapped(*args):
-        try:
-            result = cache[args]
-        except KeyError:
-            result = cache[args] = f(*args)
-        return result
-    return wrapped
+from typing import List, Tuple
 
 
 def cut_rod(prices: List[float], rod_length: int) -> float:
-    @memoized
+    @lru_cache(maxsize=None)
     def _cut_rod(rod_length):
         if rod_length == 0:
             return 0
@@ -33,13 +20,29 @@ def cut_rod(prices: List[float], rod_length: int) -> float:
     return _cut_rod(rod_length)
 
 
+def dice_rolls(num_rolls: int, sum_rolls: int) -> int:
+    """How many ways can sum_rolls be achieved in num_rolls of a six-sided die?
+
+    https://codereview.stackexchange.com/a/161016
+    """
+    @lru_cache(maxsize=None)
+    def _dice_rolls(num_rolls, sum_rolls):
+        if num_rolls == 0 and sum_rolls == 0:
+            return 1
+        if sum_rolls < num_rolls or sum_rolls > num_rolls * 6:
+            return 0
+        return sum(_dice_rolls(num_rolls-1, sum_rolls-value) for value in range(1, 7))
+
+    return _dice_rolls(num_rolls, sum_rolls)
+
+
 def knapsack(items: List[Tuple[int, int]], max_weight: int) -> Tuple[int, List[Tuple[int, int]]]:
     """The classic 0/1 knapsack problem.
 
     https://en.wikipedia.org/wiki/Knapsack_problem#0.2F1_knapsack_problem
     http://codereview.stackexchange.com/a/20581
     """
-    @memoized
+    @lru_cache(maxsize=None)
     def best_value(i: int, w: int) -> int:
         """Return the best value that can be attained using the
         first i items with weight <= w.
