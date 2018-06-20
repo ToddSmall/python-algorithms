@@ -32,3 +32,12 @@ def test_knapsack():
     max_weight = 15
     expected = (11, [(2, 1), (6, 4), (1, 1), (2, 2)])
     assert dp.knapsack(items, max_weight) == expected
+
+
+@pytest.mark.parametrize("total, G, expected", [
+    (7, [[0, 2, 5], [1, 1, 3], [2, 1, 1]], 0),
+    (12, [[0, 2, 5], [1, 1, 3], [2, 1, 1]], 1),
+])
+def test_min_remainder(total, G, expected):
+    i = j = len(G[0])
+    assert dp.min_remainder(i, j, total, G) == expected

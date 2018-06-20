@@ -12,8 +12,8 @@ def cut_rod(prices: List[float], rod_length: int) -> float:
             return 0
 
         revenue = -sys.maxsize
-        for i in range(1, rod_length+1):
-            revenue = max(revenue, prices[i-1] + _cut_rod(rod_length-i))
+        for i in range(1, rod_length + 1):
+            revenue = max(revenue, prices[i - 1] + _cut_rod(rod_length - i))
 
         return revenue
 
@@ -25,23 +25,29 @@ def dice_rolls(num_rolls: int, sum_rolls: int) -> int:
 
     https://codereview.stackexchange.com/a/161016
     """
+
     @lru_cache(maxsize=None)
     def _dice_rolls(num_rolls, sum_rolls):
         if num_rolls == 0 and sum_rolls == 0:
             return 1
         if sum_rolls < num_rolls or sum_rolls > num_rolls * 6:
             return 0
-        return sum(_dice_rolls(num_rolls-1, sum_rolls-value) for value in range(1, 7))
+        return sum(
+            _dice_rolls(num_rolls - 1, sum_rolls - value) for value in range(1, 7)
+        )
 
     return _dice_rolls(num_rolls, sum_rolls)
 
 
-def knapsack(items: List[Tuple[int, int]], max_weight: int) -> Tuple[int, List[Tuple[int, int]]]:
+def knapsack(
+    items: List[Tuple[int, int]], max_weight: int
+) -> Tuple[int, List[Tuple[int, int]]]:
     """The classic 0/1 knapsack problem.
 
     https://en.wikipedia.org/wiki/Knapsack_problem#0.2F1_knapsack_problem
     http://codereview.stackexchange.com/a/20581
     """
+
     @lru_cache(maxsize=None)
     def best_value(i: int, w: int) -> int:
         """Return the best value that can be attained using the
@@ -69,3 +75,26 @@ def knapsack(items: List[Tuple[int, int]], max_weight: int) -> Tuple[int, List[T
     result.reverse()
 
     return best_value(len(items), max_weight), result
+
+
+def min_remainder(i: int, j: int, total: int, G: List[List[int]]) -> int:
+    """Google Foobar: Save Beta Rabbit
+
+    https://codereview.stackexchange.com/a/91593
+    """
+
+    @lru_cache(maxsize=None)
+    def _min_remainder(i, j, total):
+        if total < 0 or i < 1 or j < 1:
+            return sys.maxsize
+
+        if i == 1 and j == 1:
+            return total
+
+        return min(
+            _min_remainder(i - 1, j, total - G[i - 1][j - 1]),
+            _min_remainder(i, j - 1, total - G[i - 1][j - 1]),
+        )
+
+    smallest = _min_remainder(i, j, total)
+    return smallest if smallest != sys.maxsize else -1

@@ -12,6 +12,7 @@ pytest = "*"
 mypy = "*"
 pylint = "*"
 typing-extensions = "*"
+black = "*"
 
 [dev-packages]
 
