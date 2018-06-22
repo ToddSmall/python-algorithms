@@ -14,3 +14,11 @@ from python_algorithms import misc
 )
 def test_gen_product_pairs(xs, prod, expected):
     assert list(misc.gen_product_pairs(xs, prod)) == expected
+
+
+@pytest.mark.parametrize(
+    "xs, expected",
+    [([-6, -8, -12, -5], []), ([1, 2, 5, -7, 2, 5], [1, 2, 5])]
+)
+def test_max_sub_array(xs, expected):
+    assert misc.max_sub_array(xs) == expected
