@@ -2,6 +2,7 @@
 
 from abc import abstractmethod
 import math
+import random
 from typing import Any, MutableSequence, Optional, TypeVar
 from typing_extensions import Protocol
 
@@ -109,6 +110,18 @@ def partition(
     return i + 1
 
 
+def randomized_partition(
+    A: MutableSequence[CT], p: Optional[int] = None, r: Optional[int] = None
+) -> int:
+    if p is None:
+        p = 0
+    if r is None:
+        r = len(A) - 1
+    i = random.randint(p, r)
+    A[i], A[r] = A[r], A[i]
+    return partition(A, p, r)
+
+
 def quick_sort(
     A: MutableSequence[CT], p: Optional[int] = None, r: Optional[int] = None
 ) -> None:
@@ -121,3 +134,22 @@ def quick_sort(
         q = partition(A, p, r)
         quick_sort(A, p, q - 1)
         quick_sort(A, q + 1, r)
+
+
+def randomized_select(
+    A: MutableSequence[CT], i: int, p: Optional[int] = None, r: Optional[int] = None
+) -> int:
+    """O(n) search for the i-th smallest element of `A[p:r+1]`."""
+    if p is None:
+        p = 0
+    if r is None:
+        r = len(A) - 1
+    if p >= r:
+        return A[p]
+    q = randomized_partition(A, p, r)
+    k = q - p + 1
+    if k == i:
+        return A[q]
+    if i < k:
+        return randomized_select(A, i, p, q - 1)
+    return randomized_select(A, i - k, q + 1, r)

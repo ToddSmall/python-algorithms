@@ -13,6 +13,7 @@ from python_algorithms.sorting import (
     heap_sort,
     partition,
     quick_sort,
+    randomized_select
 )
 
 
@@ -130,3 +131,12 @@ def test_partition(A, p, r, q, expected):
 def test_quick_sort(A, expected):
     quick_sort(A)
     assert A == expected
+
+
+@pytest.mark.parametrize("A, i, expected", [
+    ([13, 19, 9, 5, 12, 8, 7, 4, 21, 2, 6, 11], 5, 7),
+    ([13, 19, 9, 5, 12, 8, 7, 4, 21, 2, 6, 11], 7, 9),
+    ([13, 19, 9, 5, 12, 8, 7, 4, 21, 2, 6, 11], 100, 21) 
+])
+def test_randomized_select(A, i, expected):
+    assert randomized_select(A, i) == expected
