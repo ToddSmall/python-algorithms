@@ -10,6 +10,9 @@ from python_algorithms.sorting import (
     get_first_leaf_index,
     max_heapify,
     build_max_heap,
+    heap_sort,
+    partition,
+    quick_sort,
 )
 
 
@@ -78,4 +81,52 @@ def test_heap_max_heapify(A, i, expected):
 )
 def test_build_max_heap(A, expected):
     build_max_heap(A)
+    assert A == expected
+
+
+@pytest.mark.parametrize(
+    "A, expected",
+    [
+        ([4, 1, 3, 2, 16, 9, 10, 14, 8, 7], [1, 2, 3, 4, 7, 8, 9, 10, 14, 16]),
+        ([1, 2, 3, 4, 5], [1, 2, 3, 4, 5]),
+        ([], []),
+    ],
+)
+def test_heap_sort(A, expected):
+    heap_sort(A)
+    assert A == expected
+
+
+@pytest.mark.parametrize(
+    "A, p, r, q, expected",
+    [
+        ([2, 8, 7, 1, 3, 5, 6, 4], None, None, 3, [2, 1, 3, 4, 7, 5, 6, 8]),
+        (
+            [13, 19, 9, 5, 12, 8, 7, 4, 21, 2, 6, 11],
+            None,
+            None,
+            7,
+            [9, 5, 8, 7, 4, 2, 6, 11, 21, 13, 19, 12],
+        ),
+    ],
+)
+def test_partition(A, p, r, q, expected):
+    assert partition(A) == q
+    assert A == expected
+
+
+@pytest.mark.parametrize(
+    "A, expected",
+    [
+        ([2, 8, 7, 1, 3, 5, 6, 4], [1, 2, 3, 4, 5, 6, 7, 8]),
+        (
+            [13, 19, 9, 5, 12, 8, 7, 4, 21, 2, 6, 11],
+            [2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 19, 21],
+        ),
+        ([3, 4, 5, 6, 7], [3, 4, 5, 6, 7]),
+        ([], []),
+    ],
+)
+def test_quick_sort(A, expected):
+    quick_sort(A)
     assert A == expected

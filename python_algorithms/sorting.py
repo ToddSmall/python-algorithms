@@ -2,7 +2,7 @@
 
 from abc import abstractmethod
 import math
-from typing import Any, MutableSequence, TypeVar
+from typing import Any, MutableSequence, Optional, TypeVar
 from typing_extensions import Protocol
 
 
@@ -48,20 +48,24 @@ def get_first_leaf_index(len_heap: int) -> int:
     return math.ceil((len_heap - 1) / 2)
 
 
-def max_heapify(A: MutableSequence[CT], i: int) -> None:
+def max_heapify(
+    A: MutableSequence[CT], i: int, heap_size: Optional[int] = None
+) -> None:
     """Rearrange the elements of A, starting from node i, into a heap."""
+    if heap_size is None:
+        heap_size = len(A) - 1
     left = get_index_of_left_child(i)
     right = get_index_of_right_child(i)
-    if left < len(A) and A[left] > A[i]:
+    if left <= heap_size and A[left] > A[i]:
         largest = left
     else:
         largest = i
-    if right < len(A) and A[right] > A[largest]:
+    if right <= heap_size and A[right] > A[largest]:
         largest = right
     if largest == i:
         return None
     A[i], A[largest] = A[largest], A[i]
-    return max_heapify(A, largest)
+    return max_heapify(A, largest, heap_size=heap_size)
 
 
 def build_max_heap(A: MutableSequence[CT]) -> None:
@@ -69,3 +73,51 @@ def build_max_heap(A: MutableSequence[CT]) -> None:
     last_not_leaf_index = get_first_leaf_index(len(A)) - 1
     for i in range(last_not_leaf_index, -1, -1):
         max_heapify(A, i)
+
+
+def heap_sort(A: MutableSequence[CT]) -> None:
+    """O(n log n) in place sort of `A` using a heap data structure."""
+    len_A = len(A)
+    heap_size = len_A - 1
+    build_max_heap(A)
+    for i in range(len_A - 1, 0, -1):
+        A[0], A[i] = A[i], A[0]
+        heap_size = heap_size - 1
+        max_heapify(A, 0, heap_size=heap_size)
+
+
+def partition(
+    A: MutableSequence[CT], p: Optional[int] = None, r: Optional[int] = None
+) -> int:
+    """Partition `A[p:r]`.
+
+    `A[p:r]` is partitioned into two arrays, `A[p:q]` and `A[q+1:r]`, such
+    that each element of `A[p:q]` is <= A[q] and each element of `A[q+1:r]` is
+    >= to A[q]. Returns the index `q`.
+    """
+    if p is None:
+        p = 0
+    if r is None:
+        r = len(A) - 1
+    x = A[r]
+    i = p - 1
+    for j in range(p, r):
+        if A[j] <= x:
+            i = i + 1
+            A[i], A[j] = A[j], A[i]
+    A[i + 1], A[r] = A[r], A[i + 1]
+    return i + 1
+
+
+def quick_sort(
+    A: MutableSequence[CT], p: Optional[int] = None, r: Optional[int] = None
+) -> None:
+    """O(n log n) in place sort of `A`."""
+    if p is None:
+        p = 0
+    if r is None:
+        r = len(A) - 1
+    if p < r:
+        q = partition(A, p, r)
+        quick_sort(A, p, q - 1)
+        quick_sort(A, q + 1, r)
