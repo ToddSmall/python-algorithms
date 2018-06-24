@@ -145,7 +145,7 @@ def randomized_select(
     if r is None:
         r = len(A) - 1
     if p >= r:
-        return A[p]
+        return A[r]
     q = randomized_partition(A, p, r)
     k = q - p + 1
     if k == i:
